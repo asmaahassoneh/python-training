@@ -90,6 +90,92 @@ Expected output:
 ```
 
 ---
+---
+
+# Exercise 3 – Grades Processing
+
+The file `grades.py` stores students and their grades and provides utilities to analyze them.
+
+## Features
+
+* Return the **top 3 students** based on their grades using `sorted` with `lambda`.
+* Convert grades into **Pass/Fail results** using **list comprehensions**.
+* Validate student data (name must exist and grade must be between 0 and 100).
+
+A grade is considered **Pass if it is 60 or higher**, otherwise **Fail**.
+
+## Example
+
+```python
+from grades import get_top_3_students, get_pass_fail_results
+
+students = [
+    {"name": "Asmaa", "grade": 88},
+    {"name": "Ali", "grade": 95},
+    {"name": "Lina", "grade": 72},
+    {"name": "Omar", "grade": 99},
+]
+
+print(get_top_3_students(students))
+```
+
+Example output:
+
+```
+[
+  {"name": "Omar", "grade": 99},
+  {"name": "Ali", "grade": 95},
+  {"name": "Asmaa", "grade": 88}
+]
+```
+
+### Pass / Fail Results
+
+```python
+from grades import get_pass_fail_results
+
+students = [
+    {"name": "Asmaa", "grade": 88},
+    {"name": "Ali", "grade": 45},
+    {"name": "Lina", "grade": 60},
+]
+
+print(get_pass_fail_results(students))
+```
+
+Output:
+
+```
+[
+  {"name": "Asmaa", "grade": 88, "status": "Pass"},
+  {"name": "Ali", "grade": 45, "status": "Fail"},
+  {"name": "Lina", "grade": 60, "status": "Pass"}
+]
+```
+
+## Testing
+
+Unit tests for this exercise are implemented with **pytest** in:
+
+```
+tests/test_grades.py
+```
+
+Run tests with:
+
+```bash
+pytest
+```
+
+Expected output:
+
+```
+tests/test_grades.py ..... 
+8 passed
+
+```
+
+---
 
 # Project Structure
 
@@ -98,13 +184,15 @@ python-training
 │
 ├── profile.py
 ├── bmi.py
+├── grades.py
+│
 ├── tests
-│   └── test_bmi_calculator.py
+│   ├── test_bmi_calculator.py
+│   └── test_grades.py
 │
 ├── .gitignore
 └── README.md
 ```
-
 ---
 
 # Tools Used
