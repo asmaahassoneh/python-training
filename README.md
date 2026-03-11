@@ -174,7 +174,128 @@ tests/test_grades.py .....
 8 passed
 
 ```
+---
 
+# Exercise 4 – Command Line Contact Book
+
+The file `contact_book.py` implements a simple **command-line contact book** using a **dictionary of dictionaries**.
+
+Each contact is stored with a name as the key and a dictionary containing the contact details.
+
+To improve phone search performance, the program also uses a second dictionary called `phone_index` to map phone numbers to contact names.
+
+Example structure:
+
+```python
+contacts = {
+    "Asmaa": {
+        "phone": "0594022621",
+        "email": "asmaa.hassoneh04@gmail.com"
+    },
+    "Ali": {
+        "phone": "0594000111",
+        "email": "ali.g1994@outlook.com"
+    }
+}
+
+phone_index = {
+    "0594022621": "Asmaa",
+    "0594000111": "Ali",
+}
+```
+
+## Features
+
+* Search for contacts **by name**
+* Search for contacts **by phone number**
+* Add a new contact
+* Delete a contact
+* Display all contacts in the terminal
+* Use a phone index to improve phone search performance
+
+---
+
+## Run the Contact Book
+
+List all contacts:
+```bash
+python contact_book.py list
+```
+
+Search by **name**:
+
+```bash
+python contact_book.py search-name Asmaa
+```
+
+Example output:
+
+```
+------ CONTACT ------
+Name  : Asmaa
+Phone : 0594022621
+Email : asmaa.hassoneh04@gmail.com
+---------------------
+```
+
+Search by **phone number**:
+
+```bash
+python contact_book.py search-phone 0594000111
+```
+
+Example output:
+
+```
+------ CONTACT ------
+Name  : Ali
+Phone : 0594000111
+Email : ali.g1994@outlook.com
+---------------------
+```
+Add a new contact:
+```bash
+python contact_book.py add Lina 0594000333 lina@gmail.com
+```
+Delete a contact:
+```bash
+python contact_book.py delete Ali
+```
+
+---
+
+## Time Complexity Discussion
+
+Different operations in the contact book have different time complexities.
+
+### Search by name → O(1)
+
+Looking up a contact by name uses a dictionary key:
+
+```python
+contacts.get(name)
+```
+
+Dictionary lookups are **O(1) on average**, meaning the lookup time does not increase significantly as the number of contacts grows.
+
+### Search by phone → O(1)
+
+This makes phone lookup **O(1) on average**, instead of scanning all contacts.
+```python
+phone_index.get(phone)
+```
+### Add contact → O(1)
+Adding a contact updates both dictionaries directly by key, so it is **O(1) on average.**
+
+### Delete contact → O(1)
+Deleting a contact removes entries from both dictionaries by key, so it is also **O(1) on average.**
+
+### List all contacts → O(n log n)
+Listing contacts sorts the names first:
+```python
+sorted(contacts)
+```
+Note: Contact data in this script is stored in memory, so added contacts are not saved permanently after the program exits.
 ---
 
 # Project Structure
@@ -185,6 +306,7 @@ python-training
 ├── profile.py
 ├── bmi.py
 ├── grades.py
+├── contact_book.py
 │
 ├── tests
 │   ├── test_bmi_calculator.py
