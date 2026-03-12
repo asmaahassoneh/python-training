@@ -80,7 +80,7 @@ def test_bmi_normal():
 ## Run tests
 
 ```bash
-python -m pytest 
+python -m pytest tests/test_bmi_calculator.py 
 ```
 
 Expected output:
@@ -89,7 +89,6 @@ Expected output:
 4 passed
 ```
 
----
 ---
 
 # Exercise 3 – Grades Processing
@@ -164,7 +163,7 @@ tests/test_grades.py
 Run tests with:
 
 ```bash
-python -m pytest 
+python -m pytest tests/test_grades.py  
 ```
 
 Expected output:
@@ -287,7 +286,7 @@ tests/test_contacts.py
 Run tests with:
 
 ```bash
-python -m pytest 
+python -m pytest tests/test_contacts.py
 ```
 
 Expected output:
@@ -313,24 +312,36 @@ contacts.get(name)
 
 Dictionary lookups are **O(1) on average**, meaning the lookup time does not increase significantly as the number of contacts grows.
 
-### Search by phone → O(1)
+### Search by phone → O(n)
 
-Searching by phone number requires iterating through all contacts until a matching phone number is found:
+Searching by phone number uses a phone index dictionary built from the contacts:
 ```python
-for name, info in contacts.items():
-    if info["phone"] == phone:
+phone_index = build_phone_index(contacts)
+name = phone_index.get(phone)
 ```
-In the worst case, the program may need to check every contact.
-If there are **n contacts**, the time complexity is **O(n)**.
+The `build_phone_index` function iterates through all contacts to create a dictionary where the phone number is the key and the contact name is the value.
+
+```python
+{info["phone"]: name for name, info in contacts.items()}
+```
+Building this index requires scanning all contacts, which takes **O(n)** time.
+
+After the index is built, the lookup:
+```python
+phone_index.get(phone)
+```
+is a dictionary lookup and runs in **O(1)** time.
+However, because the index must be rebuilt each time the search function runs, the overall time complexity of the operation remains **O(n)**.
+
 ### Add contact → O(n)
 Adding a contact requires:
 
 - loading the JSON file
-- building the phone index
-- validating duplicates
+- checking for duplicate phone numbers by iterating through existing contacts
+- inserting the new contact
 - saving the updated JSON file
 
-So the full operation is effectively **O(n)**.
+Because duplicate phone checking may scan all contacts, the overall time complexity is **O(n)**.
 
 ### Delete contact → O(n)
 Deleting a contact also requires:
@@ -339,7 +350,7 @@ Deleting a contact also requires:
 - removing the entry
 - saving the updated data
 
-So it is also **O(n)** overall.
+Although deleting from a dictionary is **O(1)** on average, reading and writing the JSON file processes all contacts, so the overall operation is **O(n)**.
 
 
 ### List all contacts → O(n log n)
@@ -347,6 +358,7 @@ Listing contacts sorts the names first:
 ```python
 sorted(contacts.items())
 ```
+Sorting all contacts takes **O(n log n)** time.
 ---
 
 # Project Structure
@@ -358,9 +370,16 @@ python-training
 ├── bmi.py
 ├── grades.py
 ├── contact_book.py
+├── contacts.json
+│
+├── contacts
+│   ├── __init__.py
+│   ├── manager.py
+│   └── utils.py
 │
 ├── tests
 │   ├── test_bmi_calculator.py
+│   ├── test_contacts.py
 │   └── test_grades.py
 │
 ├── .gitignore

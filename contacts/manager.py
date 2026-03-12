@@ -17,6 +17,10 @@ DEFAULT_CONTACTS = {
 }
 
 
+def build_phone_index(contacts: dict) -> dict:
+    return {info["phone"]: name for name, info in contacts.items()}
+
+
 def load_contacts(file_path: str = "contacts.json") -> dict:
     path = Path(file_path)
 
@@ -49,16 +53,18 @@ def search_by_name(name: str, file_path: str = "contacts.json") -> dict | None:
 
 def search_by_phone(phone: str, file_path: str = "contacts.json") -> dict | None:
     contacts = load_contacts(file_path)
+    phone_index = build_phone_index(contacts)
 
-    for name, info in contacts.items():
-        if info["phone"] == phone:
-            return {
-                "name": name,
-                "phone": info["phone"],
-                "email": info["email"],
-            }
+    name = phone_index.get(phone)
+    if name is None:
+        return None
 
-    return None
+    info = contacts[name]
+    return {
+        "name": name,
+        "phone": info["phone"],
+        "email": info["email"],
+    }
 
 
 def add_contact(
@@ -84,7 +90,6 @@ def add_contact(
     if name in contacts:
         raise ValueError("A contact with this name already exists")
 
-    # check duplicate phone
     for info in contacts.values():
         if info["phone"] == phone:
             raise ValueError("A contact with this phone number already exists")
