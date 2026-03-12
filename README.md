@@ -80,7 +80,7 @@ def test_bmi_normal():
 ## Run tests
 
 ```bash
-pytest
+python -m pytest 
 ```
 
 Expected output:
@@ -164,7 +164,7 @@ tests/test_grades.py
 Run tests with:
 
 ```bash
-pytest
+python -m pytest 
 ```
 
 Expected output:
@@ -175,44 +175,45 @@ tests/test_grades.py .....
 
 ```
 ---
+# Exercise 4 – Contact Book with JSON Storage and Modules
 
-# Exercise 4 – Command Line Contact Book
+The contact book project was extended to store data permanently in a `contacts.json` file and reorganized into modules inside a `contacts/` package.
 
-The file `contact_book.py` implements a simple **command-line contact book** using a **dictionary of dictionaries**.
+## Project Modules
 
-Each contact is stored with a name as the key and a dictionary containing the contact details.
-
-To improve phone search performance, the program also uses a second dictionary called `phone_index` to map phone numbers to contact names.
-
-Example structure:
-
-```python
-contacts = {
-    "Asmaa": {
-        "phone": "0594022621",
-        "email": "asmaa.hassoneh04@gmail.com"
-    },
-    "Ali": {
-        "phone": "0594000111",
-        "email": "ali.g1994@outlook.com"
-    }
-}
-
-phone_index = {
-    "0594022621": "Asmaa",
-    "0594000111": "Ali",
-}
-```
+- `contact_book.py` → command-line entry point
+- `contacts/manager.py` → contact management logic
+- `contacts/utils.py` → password validation and custom exceptions
+- `contacts.json` → persistent contact storage
 
 ## Features
 
-* Search for contacts **by name**
-* Search for contacts **by phone number**
-* Add a new contact
-* Delete a contact
-* Display all contacts in the terminal
-* Use a phone index to improve phone search performance
+- Store contacts in `contacts.json`
+- Search for contacts **by name**
+- Search for contacts **by phone number**
+- Add a new contact
+- Delete a contact
+- Display all contacts in the terminal
+- Validate passwords using `strong_password(password: str)`
+- Raise `WeakPasswordError` for invalid passwords
+- Organize code using modules and packages
 
+## Example JSON Structure
+
+```json
+{
+    "Asmaa": {
+        "phone": "0594022621",
+        "email": "asmaa.hassoneh04@gmail.com",
+        "password": "StrongPass1"
+    },
+    "Ali": {
+        "phone": "0594000111",
+        "email": "ali.g1994@outlook.com",
+        "password": "AliPass123"
+    }
+}
+```
 ---
 
 ## Run the Contact Book
@@ -255,13 +256,47 @@ Email : ali.g1994@outlook.com
 ```
 Add a new contact:
 ```bash
-python contact_book.py add Lina 0594000333 lina@gmail.com
+python contact_book.py add Lina 0594000333 lina@gmail.com LinaPass9
 ```
 Delete a contact:
 ```bash
 python contact_book.py delete Ali
 ```
+---
+## Password Validation
+The function `strong_password(password: str)` checks that the password:
+- is at least 8 characters long
+- contains at least one uppercase letter
+- contains at least one lowercase letter
+- contains at least one digit
+- does not start or end with spaces
 
+If the password is invalid, the program raises:
+```python
+WeakPasswordError
+```
+---
+## Testing
+
+Unit tests for this exercise are implemented in:
+
+```
+tests/test_contacts.py
+```
+
+Run tests with:
+
+```bash
+python -m pytest 
+```
+
+Expected output:
+
+```
+tests\test_contacts.py ...............
+15 passed
+
+```
 ---
 
 ## Time Complexity Discussion
@@ -280,22 +315,38 @@ Dictionary lookups are **O(1) on average**, meaning the lookup time does not inc
 
 ### Search by phone → O(1)
 
-This makes phone lookup **O(1) on average**, instead of scanning all contacts.
+Searching by phone number requires iterating through all contacts until a matching phone number is found:
 ```python
-phone_index.get(phone)
+for name, info in contacts.items():
+    if info["phone"] == phone:
 ```
-### Add contact → O(1)
-Adding a contact updates both dictionaries directly by key, so it is **O(1) on average.**
+In the worst case, the program may need to check every contact.
+If there are **n contacts**, the time complexity is **O(n)**.
+### Add contact → O(n)
+Adding a contact requires:
 
-### Delete contact → O(1)
-Deleting a contact removes entries from both dictionaries by key, so it is also **O(1) on average.**
+- loading the JSON file
+- building the phone index
+- validating duplicates
+- saving the updated JSON file
+
+So the full operation is effectively **O(n)**.
+
+### Delete contact → O(n)
+Deleting a contact also requires:
+
+- loading contacts from JSON
+- removing the entry
+- saving the updated data
+
+So it is also **O(n)** overall.
+
 
 ### List all contacts → O(n log n)
 Listing contacts sorts the names first:
 ```python
-sorted(contacts)
+sorted(contacts.items())
 ```
-Note: Contact data in this script is stored in memory, so added contacts are not saved permanently after the program exits.
 ---
 
 # Project Structure
@@ -352,5 +403,5 @@ black .
 Run tests:
 
 ```bash
-pytest
+python -m pytest 
 ```
