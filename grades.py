@@ -3,19 +3,23 @@ def validate_students(students: list[dict]) -> None:
         raise ValueError("Students must be provided as a list")
 
     for index, student in enumerate(students, start=1):
+
         if not isinstance(student, dict):
             raise ValueError(f"Student #{index} must be a dictionary")
 
-        if "name" not in student or "grade" not in student:
+        if not all(key in student for key in ("name", "grade")):
             raise ValueError(f"Student #{index} must have name and grade")
 
-        if not isinstance(student["name"], str) or not student["name"].strip():
+        name = student["name"]
+        grade = student["grade"]
+
+        if not isinstance(name, str) or not name.strip():
             raise ValueError(f"Student #{index} name must be a non-empty string")
 
-        if not isinstance(student["grade"], (int, float)):
+        if not isinstance(grade, (int, float)):
             raise ValueError(f"Student #{index} grade must be a number")
 
-        if not 0 <= student["grade"] <= 100:
+        if not 0 <= grade <= 100:
             raise ValueError(f"Student #{index} grade must be between 0 and 100")
 
 
