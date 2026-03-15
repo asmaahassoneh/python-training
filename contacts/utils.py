@@ -3,6 +3,12 @@ class WeakPasswordError(Exception):
 
 
 def strong_password(password: str) -> bool:
+    """
+    Validate password strength.
+
+    Time complexity: O(n)
+    because we scan the password characters to check conditions.
+    """
     if not isinstance(password, str):
         raise WeakPasswordError("Password must be a string")
 
@@ -15,6 +21,7 @@ def strong_password(password: str) -> bool:
     has_upper = any(char.isupper() for char in password)
     has_lower = any(char.islower() for char in password)
     has_digit = any(char.isdigit() for char in password)
+    has_special = any(not char.isalnum() for char in password)
 
     if not has_upper:
         raise WeakPasswordError("Password must contain at least one uppercase letter")
@@ -24,5 +31,8 @@ def strong_password(password: str) -> bool:
 
     if not has_digit:
         raise WeakPasswordError("Password must contain at least one digit")
+
+    if not has_special:
+        raise WeakPasswordError("Password must contain at least one special character")
 
     return True
