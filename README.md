@@ -195,6 +195,8 @@ The contact book project was extended to store data permanently in a `contacts.j
 - Display all contacts in the terminal
 - Validate passwords using `strong_password(password: str)`
 - Raise `WeakPasswordError` for invalid passwords
+- Prevent duplicate **name**, **phone number**, and **email**
+- Safely handle corrupted JSON files by resetting to default contacts
 - Organize code using modules and packages
 
 ## Example JSON Structure
@@ -204,12 +206,12 @@ The contact book project was extended to store data permanently in a `contacts.j
     "Asmaa": {
         "phone": "0594022621",
         "email": "asmaa.hassoneh04@gmail.com",
-        "password": "StrongPass1"
+        "password": "StrongPass1!"
     },
     "Ali": {
         "phone": "0594000111",
         "email": "ali.g1994@outlook.com",
-        "password": "AliPass123"
+        "password": "AliPass123!"
     }
 }
 ```
@@ -255,7 +257,7 @@ Email : ali.g1994@outlook.com
 ```
 Add a new contact:
 ```bash
-python contact_book.py add Lina 0594000333 lina@gmail.com LinaPass9
+python contact_book.py add Lina 0594000333 lina@gmail.com LinaPass9!
 ```
 Delete a contact:
 ```bash
@@ -267,7 +269,8 @@ The function `strong_password(password: str)` checks that the password:
 - is at least 8 characters long
 - contains at least one uppercase letter
 - contains at least one lowercase letter
-- contains at least one digit
+- contains at least one 
+- contains at least one special character
 - does not start or end with spaces
 
 If the password is invalid, the program raises:
@@ -293,7 +296,7 @@ Expected output:
 
 ```
 tests\test_contacts.py ...............
-15 passed
+20 passed
 
 ```
 ---
@@ -343,7 +346,7 @@ Adding a contact requires:
 
 Because duplicate phone checking may scan all contacts, the overall time complexity is **O(n)**.
 
-### Delete contact → O(n)
+### Delete contact → O(n) overall
 Deleting a contact also requires:
 
 - loading contacts from JSON
